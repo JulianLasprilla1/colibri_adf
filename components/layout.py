@@ -7,7 +7,7 @@ from config import supabase
 logger = logging.getLogger(__name__)
 
 MENU_WIDTH = 240          # ancho del drawer
-CONTENT_MAX_W = 1200      # límite máximo del panel central
+CONTENT_MAX_W = 1400      # límite máximo del panel central
 
 
 def base_layout(page: ft.Page, inner_content: ft.Control):
@@ -118,6 +118,15 @@ def base_layout(page: ft.Page, inner_content: ft.Control):
                     hover_color=ft.Colors.BLUE_GREY_100,
                     on_click=lambda e: navigate_to("/home", "🔄 Cargando resumen..."),
                 ),
+                ft.ListTile(
+                    leading=ft.Icon(ft.Icons.CLOUD_UPLOAD, color=ft.Colors.BLUE_GREY_700),
+                    title=ft.Text("Carga de órdenes"),
+                    hover_color=ft.Colors.BLUE_GREY_100,
+                    on_click=lambda e: navigate_to(
+                        "/upload", "🔄 Cargando módulo de carga..."
+                    ),
+                ),
+
                 ft.Container(expand=True),
                 ft.ElevatedButton(
                     icon=ft.Icon(ft.Icons.LOGOUT_OUTLINED, color=ft.Colors.RED),
@@ -142,12 +151,19 @@ def base_layout(page: ft.Page, inner_content: ft.Control):
     )
 
     # ─── Panel central ────────────────────────────────────────────────────
+    # --- Animación de cambio de vista ---------------------------------------
+    animated_switcher = ft.AnimatedSwitcher(
+        inner_content,                       # hijo actual
+        transition=ft.AnimatedSwitcherTransition.FADE,  # o .SLIDE, .SCALE, etc.
+        duration=300,                        # ms
+    )
+
     rounded_container = ft.Container(
         width=min(page.width - 40, CONTENT_MAX_W),
         bgcolor=ft.Colors.WHITE,
         border_radius=20,
         padding=25,
-        content=inner_content,
+        content=animated_switcher,           # ← ahora el switcher es el hijo real
     )
 
     content_container = ft.Container(
